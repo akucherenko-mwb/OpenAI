@@ -415,6 +415,17 @@ public struct ChatQuery: Equatable, Codable, Streamable {
                     }
                 }
 
+                public init(from decoder: Decoder) throws {
+                    let container = try decoder.singleValueContainer()
+                    if let textParam = try? container.decode(ChatCompletionContentPartTextParam.self) {
+                        self = .chatCompletionContentPartTextParam(textParam)
+                    } else if let imageParam = try? container.decode(ChatCompletionContentPartImageParam.self) {
+                        self = .chatCompletionContentPartImageParam(imageParam)
+                    } else {
+                        throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid vision content type")
+                    }
+                }
+
                 enum CodingKeys: CodingKey {
                     case chatCompletionContentPartTextParam
                     case chatCompletionContentPartImageParam
